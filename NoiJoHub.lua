@@ -16,7 +16,8 @@ pcall(function()
 end)
 
 -- ĐÃ SỬA: Thay đổi link tải Rayfield chính xác
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu'))()
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))()
+
 
 local Window = Rayfield:CreateWindow({
    Name = "Premium Blox Fruits Hub | Anti-Cheat Bypass",
