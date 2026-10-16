@@ -2,37 +2,36 @@
 -- 1. HỆ THỐNG BYPASS ANTI-CHEAT & ANTI-AFK (CHỐNG PHÁT HIỆN GIAN LẬN)
 -- =========================================================================
 pcall(function()
-    -- Vượt qua bộ đếm thời gian treo máy của Roblox (Chống Kick Disconnect)
     local VirtualUser = game:GetService("VirtualUser")
     game:GetService("Players").LocalPlayer.Idled:Connect(function()
         VirtualUser:CaptureController()
         VirtualUser:ClickButton2(Vector2.new(0,0))
     end)
     
-    -- Xóa bỏ bộ quét vị trí của game nếu có để tránh bị Ban khi dịch chuyển (Tween)
     if game.Workspace:FindFirstChild("AntiCheat") then
         game.Workspace.AntiCheat:Destroy()
     end
 end)
 
--- ĐÃ SỬA: Thay đổi link tải Rayfield chính xác
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+-- THAY ĐỔI: Sử dụng Orion UI để sửa triệt để lỗi "nil value" của Rayfield
+local OrionLib = loadstring(game:HttpGet(('https://githubusercontent.com')))()
 
-local Window = Rayfield:CreateWindow({
-   Name = "Premium Blox Fruits Hub | Anti-Cheat Bypass",
-   LoadingTitle = "Đang tải hệ thống bảo mật nâng cao...",
-   LoadingSubtitle = "by Lập Trình Viên Roblox",
-   ConfigurationSaving = { Enabled = false }
+-- Tạo cửa sổ Menu chính
+local Window = OrionLib:MakeWindow({
+    Name = "Premium Blox Fruits Hub | Orion Edition", 
+    HidePremium = false, 
+    SaveConfig = false,
+    IntroText = "Đang tải NoiJo Hub..."
 })
 
--- Tạo các Tab menu chức năng
-local TabMain    = Window:CreateTab("Auto Farm", 4483362458)
-local TabEvents  = Window:CreateTab("Sea Events", 4483362458)
-local TabItems   = Window:CreateTab("Nhiệm Vụ Item", 4483362458)
-local TabCombat  = Window:CreateTab("Chiến Đấu / PVP", 4483362458)
-local TabPlayer  = Window:CreateTab("Người Chơi", 4483362458)
+-- Tạo các Tab chức năng bằng Orion UI
+local TabMain    = Window:MakeTab({Name = "Auto Farm", Icon = "rbxassetid://4483362458"})
+local TabEvents  = Window:MakeTab({Name = "Sea Events", Icon = "rbxassetid://4483362458"})
+local TabItems   = Window:MakeTab({Name = "Nhiệm Vụ Item", Icon = "rbxassetid://4483362458"})
+local TabCombat  = Window:MakeTab({Name = "Chiến Đấu / PVP", Icon = "rbxassetid://4483362458"})
+local TabPlayer  = Window:MakeTab({Name = "Người Chơi", Icon = "rbxassetid://4483362458"})
 
--- Các biến kiểm soát trạng thái (Tắt/Bật)
+-- Các biến kiểm soát trạng thái
 _G.AutoFarm = false
 _G.AutoQuest = false
 _G.SeaEventFarm = false
@@ -40,12 +39,10 @@ _G.QuestItem = false
 _G.AimPVP = false
 _G.TweenSpeed = 320 
 
--- Hàm click chuột tự động đánh
 function AutoAttack()
     game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0))
 end
 
--- Hàm dịch chuyển mượt mà (Tween) an toàn qua mặt Anti-Cheat
 function SecureTween(targetCFrame)
     local player = game.Players.LocalPlayer
     if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then return end
@@ -62,10 +59,9 @@ end
 -- =========================================================================
 -- TAB 1: AUTO FARM LEVEL & NHẬN NHIỆM VỤ
 -- =========================================================================
-TabMain:CreateToggle({
+TabMain:AddToggle({
    Name = "Bật Auto Farm Cấp Độ + Nhận Nhiệm Vụ",
-   CurrentValue = false,
-   Flag = "ToggleMainFarm",
+   Default = false,
    Callback = function(Value)
        _G.AutoFarm = Value
        _G.AutoQuest = Value
@@ -124,10 +120,9 @@ TabMain:CreateToggle({
 -- =========================================================================
 -- TAB 2: SEA EVENTS
 -- =========================================================================
-TabEvents:CreateToggle({
+TabEvents:AddToggle({
    Name = "Tự Động Săn Khổng Lồ Biển (Auto Sea Events)",
-   CurrentValue = false,
-   Flag = "ToggleSeaEvent",
+   Default = false,
    Callback = function(Value)
        _G.SeaEventFarm = Value
        spawn(function()
@@ -152,15 +147,14 @@ TabEvents:CreateToggle({
 -- =========================================================================
 -- TAB 3: NHIỆM VỤ LẤY ITEM
 -- =========================================================================
-TabItems:CreateToggle({
+TabItems:AddToggle({
    Name = "Auto Làm Chuỗi Nhiệm Vụ Lấy Kiếm Saber (Sea 1)",
-   CurrentValue = false,
-   Flag = "ToggleSaber",
+   Default = false,
    Callback = function(Value)
        _G.QuestItem = Value
        spawn(function()
            if _G.QuestItem then
-               Rayfield:Notify({Title = "Item Quest", Content = "Đang bắt đầu chuỗi giải đố nút bấm Đảo Khỉ...", Duration = 3})
+               OrionLib:MakeNotification({Name = "Item Quest", Content = "Đang giải đố nút bấm Đảo Khỉ...", Time = 3})
                pcall(function()
                    local Buttons = {"Button1", "Button2", "Button3", "Button4", "Button5"}
                    for _, btnName in pairs(Buttons) do
@@ -179,10 +173,9 @@ TabItems:CreateToggle({
 -- =========================================================================
 -- TAB 4: CHIẾN ĐẤU / AIM PVP
 -- =========================================================================
-TabCombat:CreateToggle({
+TabCombat:AddToggle({
    Name = "Bật Aim Khóa Mục Tiêu PVP (Aimlock)",
-   CurrentValue = false,
-   Flag = "ToggleAimlock",
+   Default = false,
    Callback = function(Value)
        _G.AimPVP = Value
        
@@ -214,11 +207,11 @@ TabCombat:CreateToggle({
 -- =========================================================================
 -- TAB 5: ĐIỀU CHỈNH NGƯỜI CHƠI
 -- =========================================================================
-TabPlayer:CreateSlider({
+TabPlayer:AddSlider({
    Name = "Tốc Độ Di Chuyển (WalkSpeed)",
    Min = 16,
    Max = 250,
-   DefaultValue = 16,
+   Default = 16,
    Color = Color3.fromRGB(0, 255, 128),
    Increment = 1,
    ValueName = "Speed",
@@ -227,11 +220,11 @@ TabPlayer:CreateSlider({
    end,
 })
 
-TabPlayer:CreateSlider({
+TabPlayer:AddSlider({
    Name = "Độ Cao Lực Nhảy (JumpPower)",
    Min = 50,
    Max = 350,
-   DefaultValue = 50,
+   Default = 50,
    Color = Color3.fromRGB(0, 128, 255),
    Increment = 1,
    ValueName = "Jump",
@@ -239,3 +232,6 @@ TabPlayer:CreateSlider({
        game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
    end,
 })
+
+-- Khởi chạy Orion UI
+OrionLib:Init()
